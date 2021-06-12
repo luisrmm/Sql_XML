@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FacturaElectronica>
-    <Clave>50614081900011121314500100001010000000027101002449</Clave>
+    <Clave>123</Clave>
     <CodigoActividad>851201</CodigoActividad>
     <NumeroConsecutivo>00100001010000000027</NumeroConsecutivo>
     <FechaEmision>2019-08-14 11:16:50</FechaEmision>

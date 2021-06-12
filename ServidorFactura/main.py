@@ -1,10 +1,14 @@
 import xml.etree.ElementTree as ET
 from Tools.functions import *
 from Tools.mysql_ import *
+from Tools.serverThreads import server
+
 filename = "FacturaExamen.xml"
 xmlTree = ET.parse(filename)
 
 rootElement = xmlTree.getroot()
+
+COLUMNS_FACTURA = ['Clave', 'CodigoActividad', 'NumeroConsecutivo', 'FechaEmision', 'Emisor', 'Receptor', 'CondicionVenta', 'MedioPago', 'ResumenFactura', 'Otros']
 
 def getDataQueryTwo():
     columns = []
@@ -42,7 +46,7 @@ def getDataQueryOne():
     columns = []
     values = []
 
-    for tag in ['Clave', 'CodigoActividad', 'NumeroConsecutivo', 'FechaEmision', 'Emisor', 'Receptor', 'CondicionVenta', 'MedioPago', 'ResumenFactura', 'Otros']:
+    for tag in COLUMNS_FACTURA:
         for element in rootElement.findall(tag):
             if (element.tag and bool(element.text.strip())):
                 columns.append(element.tag)
@@ -66,26 +70,26 @@ def getDataQueryOne():
     return [columns, values]
 
 def part_1():
-    str_columns = ""
-    str_values = ""
+    str_columns_1 = ""
+    str_values_2 = ""
     SEPARADOR = ", "
     objectQueryOne = getDataQueryOne()
     objectQueryTwo = getDataQueryTwo()
     
     for c in objectQueryOne[0]:
-        str_columns += c + SEPARADOR
+        str_columns_1 += c + SEPARADOR
 
     for v in objectQueryOne[1]:
-        str_values += "'" + v + "'" + SEPARADOR
+        str_values_2 += "'" + v + "'" + SEPARADOR
 
-    fullQueryOne = queryToSQL('factura', str_columns[0: -2], str_values[0: -2])
+    fullQueryOne = queryToSQL('factura', str_columns_1[0: -2], str_values_2[0: -2])
 
-    str_columns = ""
-    str_values = ""
+    # print(str_columns_1)
+    str_columns_2 = ""
     objectQueryTwo[0][0].insert(0, "ClaveFacturaElectronica")
 
     for c in objectQueryTwo[0][0]:
-        str_columns += c + SEPARADOR
+        str_columns_2 += c + SEPARADOR
 
     clave = objectQueryOne[1][0]
 
@@ -96,7 +100,7 @@ def part_1():
         objectQueryTwo[1][i].insert(0, clave)
         i += 1
 
-    fullQueryTwo = queryToSQL('detalleservicio', str_columns[0: -2], objectQueryTwo[1])
+    fullQueryTwo = queryToSQL('detalleservicio', str_columns_2[0: -2], objectQueryTwo[1])
 
     formattedQuery = fullQueryTwo.replace("([[", "(").replace("]])", ")").replace("[", "(").replace("]", ")")
 
@@ -111,10 +115,14 @@ def part_1():
 def part_2():
     convert()
 
+def part_3():
+    server()
+
 def main():
     part_1()
-    part_2()
+    # part_2()
 
+    part_3()
 
 if __name__ == "__main__":
     main()
